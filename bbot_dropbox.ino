@@ -27,8 +27,10 @@ void dmpDataReady() {
 }
 float pitch;
 float roll;
-//end
+float yaw;
+//end MPU vars
 
+//various structs for organization
 struct joint{
   Servo servo;
   int pin;
@@ -54,47 +56,53 @@ struct q_struct{
 };
 
 // leg declaration w/ offsets
+const int universaloffset1 = 50; // insert the values you used in servo_init.ino here
+const int universaloffset2 = 16; 
 joint j11;joint j12; joint j13; joint j21; joint j22;joint j23; joint j31; joint j32; joint j33;
-leg leg1 = {0,&j11,&j12,&j13,0,0,-1,-19}; 
-leg leg2 = {1,&j21,&j22,&j23,0,0,6,-9};
+leg leg1 = {0,&j11,&j12,&j13,0,0,-1,-19}; // insert individual joint offsets for each leg here
+leg leg2 = {1,&j21,&j22,&j23,0,0,6,-9};   // (also from servo_init.ino)
 leg leg3 = {2,&j31,&j32,&j33,0,0,8,-7};
 leg * legs[3] = {&leg1,&leg2,&leg3};
 
-//user input
+//user input vars
 char temp;
 char which_func = '0';
 bool newData = false;
 
-//timing
-unsigned long delta = 10; // time between IK recalculations
+//timing vars
+unsigned long delta = 0; // time between IK recalculations
 unsigned long timeToMove;
 int c = 0;
 
-//offsets+movement
-const float y_ground = -112;
-const int universaloffset1 = 50; // don't change
-const int universaloffset2 = 16; // don't change
-float L0 = 126; // link lengths
-float L1 = 97;
-float L2 = 245; 
-float d = 97;
-float Ln = 159.01; //sqrt(L1*L1+L0*L0);
-float psi_dif = 37.59; //atan(d/L0)*180/pi;
+//IK vars
+const float L0 = 126; // link lengths
+const float L1 = 136;
+const float L2 = 265; 
+const float d = 97;
+const float Ln = 159; //sqrt(d*d+L0*L0);
+const float psi_dif = 37.59; //atan(d/L0)*180/pi;
+float L2_offset = 15;
 
-float x_push = 0; // globals for push functions
-float y_push = y_ground;
-float push_speed = 4; // speed for pushing motion
+//movement vars
+const float y_ground = -105; // can decrease if legs have insufficent traction with ground
+float push_speed = 3; // speed for pushing motion
 float prep_speed = 2; // speed between pushing motions
+float stop_offset = 2; // additional distance in the y direction that the stop function digs into the ground
+int x_stand = 200; // distance from the center of the robot that the leg extends during the stand function
+int inactive_push_x = 220; // defines position of inactive legs during pushing functions
+int inactive_push_y = y_ground + 35;
+int push_retract_height = 22; // height that active legs lift above y_ground during pushing functions
+int walkSPL[2] = {260,40}; // x positions that active legs move between during pushing functions
+
+//state machines vars
+float x_push = 0; // for push functions
+float y_push = y_ground;
 bool done;
 bool first_time;
-int inactive_push_x = 200; // vars for inactive leg positions
-int inactive_push_y = y_ground + 30;
-int push_retract_height = 22;
-int walkSPL[2] = {260,90};
 
 void setup() {
 
-  j11.pin = 4;  
+  j11.pin = 4;  // make sure these values correctly represent the Arduino digital pins each servo control pin is connected to
   j12.pin = 5; 
   j13.pin = 6; 
   j21.pin = 7;
@@ -103,7 +111,7 @@ void setup() {
   j31.pin = 10;
   j32.pin = 11;
   j33.pin = 12;
-  /*j21.pin = 13;  // disables leg for testing
+  /*j21.pin = 13;  // can be used to disable one or more legs for testing
   j22.pin = 14; 
   j23.pin = 15; */
 
@@ -114,7 +122,7 @@ void setup() {
   }
 
   for (int i = 0; i < 180; i++)
-    stand(1);
+    stand();
 
   // ***** start mpu setup *****
   Serial.begin(115200);
@@ -182,12 +190,30 @@ void loop() {
       case '3':
         push_leg3();
         break;
+      case '4':
+        stop();
+        break;
+      case '5':
+        stand_incline(20);
+        break;
+      case '6':
+        stop_incline(20);
+        break;
+      case '7':
+        pivot_incline(0,20);
+        break;
+      case '8':
+        pivot_incline(1,20);
+        break;
+      case '9':
+        pivot_incline(2,20);
+        break;
       default:
-        stand(1);
+        stand();
         break;
     }
     timeToMove = millis();
-    //Serial.print("roll: ");Serial.print(roll);Serial.print(" pitch: ");Serial.println(pitch);
+    //Serial.print("yaw: ");Serial.println(yaw);//Serial.print(" pitch: ");Serial.println(pitch);
   }
 
   if (!dmpReady) return;
@@ -198,9 +224,8 @@ void loop() {
     mpu.dmpGetYawPitchRoll(ypr, &q, &gravity);
     roll = (ypr[2] * 180/M_PI);
     pitch = (ypr[1] * 180/M_PI);
+    yaw = (ypr[0] * 180/M_PI);
    }
-
-
 }
 
 void push_leg1(){
@@ -209,42 +234,53 @@ void push_leg1(){
       done = true;
       x_push = walkSPL[1];
       y_push = y_ground;
-      if (first_time){
-        if (!transition(0,1))
-          done = false;
-        if (!transition(1,-1))
-          done = false;
-        if (!transition(2,-1))
-          done = false;
-      }
+      if (!transition(0,0))
+        done = false;
+      if (!transition(1,0))
+        done = false;
+      if (!transition(2,0))
+        done = false;
       if (done){
         first_time = false;
         c = 1;
       }
       break;
     case 1:
+      done = true;
+      if (!transition(0,1))
+        done = false;
+      if (!transition(1,-1))
+        done = false;
+      if (!transition(2,-1))
+        done = false;
+      if (done){
+        first_time = false;
+        c = 2;
+      }
+      break;
+    case 2:
       extendLeg(0,0,x_push,y_ground,0);
       x_push = x_push + push_speed;
       if (x_push>=walkSPL[0])
-        c=2;
-      break;
-    case 2:
-      extendLeg(0,0,walkSPL[0],y_push,0);
-      y_push = y_push + prep_speed;
-      if (y_push>=(y_ground+push_retract_height))
         c=3;
       break;
     case 3:
-      extendLeg(0,0,x_push,y_ground+push_retract_height,0);
-      x_push = x_push - prep_speed;
-      if (x_push<=walkSPL[1])
+      extendLeg(0,0,walkSPL[0],y_push,0);
+      y_push = y_push + prep_speed;
+      if (y_push>=(y_ground+push_retract_height))
         c=4;
       break;
     case 4:
+      extendLeg(0,0,x_push,y_ground+push_retract_height,0);
+      x_push = x_push - prep_speed;
+      if (x_push<=walkSPL[1])
+        c=5;
+      break;
+    case 5:
       extendLeg(0,0,walkSPL[1],y_push,0);
       y_push = y_push - prep_speed;
       if (y_push<=(y_ground))
-        c=0;
+        c=2;
       break;
   }
   if (c!=0){
@@ -260,42 +296,53 @@ void push_leg2(){
       done = true;
       x_push = walkSPL[1];
       y_push = y_ground;
-      if (first_time){
-        if (!transition(1,1))
-          done = false;
-        if (!transition(0,-1))
-          done = false;
-        if (!transition(2,-1))
-          done = false;
-      }
+      if (!transition(0,0))
+        done = false;
+      if (!transition(1,0))
+        done = false;
+      if (!transition(2,0))
+        done = false;
       if (done){
         first_time = false;
         c = 1;
       }
       break;
     case 1:
+      done = true;
+      if (!transition(1,1))
+        done = false;
+      if (!transition(0,-1))
+        done = false;
+      if (!transition(2,-1))
+        done = false;
+      if (done){
+        first_time = false;
+        c = 2;
+      }
+      break;
+    case 2:
       extendLeg(1,0,x_push,y_ground,0);
       x_push = x_push + push_speed;
       if (x_push>=walkSPL[0])
-        c=2;
-      break;
-    case 2:
-      extendLeg(1,0,walkSPL[0],y_push,0);
-      y_push = y_push + prep_speed;
-      if (y_push>=(y_ground+push_retract_height))
         c=3;
       break;
     case 3:
-      extendLeg(1,0,x_push,y_ground+push_retract_height,0);
-      x_push = x_push - prep_speed;
-      if (x_push<=walkSPL[1])
+      extendLeg(1,0,walkSPL[0],y_push,0);
+      y_push = y_push + prep_speed;
+      if (y_push>=(y_ground+push_retract_height))
         c=4;
       break;
     case 4:
+      extendLeg(1,0,x_push,y_ground+push_retract_height,0);
+      x_push = x_push - prep_speed;
+      if (x_push<=walkSPL[1])
+        c=5;
+      break;
+    case 5:
       extendLeg(1,0,walkSPL[1],y_push,0);
       y_push = y_push - prep_speed;
       if (y_push<=(y_ground))
-        c=0;
+        c=2;
       break;
   }
   if (c!=0){
@@ -311,42 +358,53 @@ void push_leg3(){
       done = true;
       x_push = walkSPL[1];
       y_push = y_ground;
-      if (first_time){
-        if (!transition(2,1))
-          done = false;
-        if (!transition(0,-1))
-          done = false;
-        if (!transition(1,-1))
-          done = false;
-      }
+      if (!transition(0,0))
+        done = false;
+      if (!transition(1,0))
+        done = false;
+      if (!transition(2,0))
+        done = false;
       if (done){
         first_time = false;
         c = 1;
       }
       break;
     case 1:
+      done = true;
+      if (!transition(2,1))
+        done = false;
+      if (!transition(0,-1))
+        done = false;
+      if (!transition(1,-1))
+        done = false;
+      if (done){
+        first_time = false;
+        c = 2;
+      }
+      break;
+    case 2:
       extendLeg(2,0,x_push,y_ground,0);
       x_push = x_push + push_speed;
       if (x_push>=walkSPL[0])
-        c=2;
-      break;
-    case 2:
-      extendLeg(2,0,walkSPL[0],y_push,0);
-      y_push = y_push + prep_speed;
-      if (y_push>=(y_ground+push_retract_height))
         c=3;
       break;
     case 3:
-      extendLeg(2,0,x_push,y_ground+push_retract_height,0);
-      x_push = x_push - prep_speed;
-      if (x_push<=walkSPL[1])
+      extendLeg(2,0,walkSPL[0],y_push,0);
+      y_push = y_push + prep_speed;
+      if (y_push>=(y_ground+push_retract_height))
         c=4;
       break;
     case 4:
+      extendLeg(2,0,x_push,y_ground+push_retract_height,0);
+      x_push = x_push - prep_speed;
+      if (x_push<=walkSPL[1])
+        c=5;
+      break;
+    case 5:
       extendLeg(2,0,walkSPL[1],y_push,0);
       y_push = y_push - prep_speed;
       if (y_push<=(y_ground))
-        c=0;
+        c=2;
       break;
   }
   if (c!=0){
@@ -356,7 +414,7 @@ void push_leg3(){
   writeAll();
 }
 
-void stand(bool foot_mode){
+void stand(){
   switch (c){
     case 0:
       done = true;
@@ -377,7 +435,34 @@ void stand(bool foot_mode){
       }
     case 1:
       for (int i = 0; i < 3; i++){
-        extendLeg(i, 1, 200, y_ground, 1);
+        extendLeg(i, 1, x_stand, y_ground, 1);
+      }
+  }
+  writeAll();
+}
+
+void stop(){
+  switch (c){
+    case 0:
+      done = true;
+      if (first_time){
+        for (int i = 0; i < 3; i++){
+          if (!transition(i,2))
+            done = false;;
+        }
+        if (done){
+          first_time = false;
+          c = 1;
+        }
+        break;
+      }
+      else{
+        c=1;
+        break;
+      }
+    case 1:
+      for (int i = 0; i < 3; i++){
+        extendLeg(i, 0, x_stand, y_ground - stop_offset, 1);
       }
   }
   writeAll();
@@ -387,18 +472,18 @@ bool extendLeg(int index, int foot_mode, int x, int y, bool override){
   leg * l = *(legs+index);
   l->x = x;
   l->y = y;
-  q_struct qs = IK(index, 1, override);
+  q_struct qs = IK(index, foot_mode, override);
   float posj1 = qs.q1+universaloffset1+l->offset1 + 90-psi_dif;
   float posj2 = qs.q2+universaloffset2+l->offset2;
   if (foot_mode == 0)
-    legs[index]->joint3->pos = 40;
+    legs[index]->joint3->pos = 55;
   else
     legs[index]->joint3->pos = 0;
   l->joint1->pos = posj1;
   l->joint2->pos = posj2;
 }
 
-struct q_struct IK(int index, float ornt, bool override){
+struct q_struct IK(int index, int foot_mode, bool override){
   leg * l = *(legs+index);
   float x = l->x;
   float y = l->y;
@@ -410,19 +495,22 @@ struct q_struct IK(int index, float ornt, bool override){
   float psi = phi - psi_dif;
   float x1 = x - Ln*cosd(psi);
   float y1 = y - Ln*sind(psi);
-  
+  float L2_copy;
+  if (foot_mode == 1)
+    L2_copy = L2;
+  else
+    L2_copy = L2 - L2_offset;
+  float q2 = acosd((pow(x1,2) + pow(y1,2) - pow(L1,2) - pow(L2_copy,2))/(2*L1*L2_copy));
+  float q1 = atan2d(y1,x1) + atan2d((L2_copy*sind(q2)),(L1+L2_copy*cosd(q2))) - psi;
   /*Serial.print("x: ");Serial.println(x);
   Serial.print("phi: ");Serial.println(phi);
   Serial.print("psi: ");Serial.println(psi);
   Serial.print("x1: ");Serial.println(x1);
   Serial.print("y1: ");Serial.println(y1);
   Serial.print("L1: ");Serial.println(L1);
-  Serial.print("L2: ");Serial.println(L2);*/
-
-  float q2 = ornt*acosd((pow(x1,2) + pow(y1,2) - pow(L1,2) - pow(L2,2))/(2*L1*L2));
-  float q1 = atan2d(y1,x1) + atan2d((L2*sind(q2)),(L1+L2*cosd(q2))) - psi;
-  //Serial.print("q1: ");Serial.println(q1);
-  //Serial.print("q2: ");Serial.println(q2);
+  Serial.print("L2: ");Serial.println(L2);
+  Serial.print("q1: ");Serial.println(q1);
+  Serial.print("q2: ");Serial.println(q2);*/
   q_struct qs = {q1,q2};
   return qs;
 }
@@ -454,7 +542,7 @@ bool transition(int index, int which_func){
   float footmode;
   bool override;
   if (which_func == 0){ // stand
-    x_goal = 200;
+    x_goal = x_stand;
     y_goal = y_ground;
     footmode = 1;
     override = true;
@@ -471,6 +559,114 @@ bool transition(int index, int which_func){
     footmode = 0;
     override = false;
   }
+  else if (which_func == 2){ // stop
+    x_goal = x_stand;
+    y_goal = y_ground-stop_offset;
+    footmode = 0;
+    override = true;
+  }
+  float x = legs[index]->x;
+  float y = legs[index]->y;
+  if (abs(x-x_goal) <= 2 && abs(y-y_goal) <= 2){
+    return true;
+  }
+  if (x > x_goal){
+    if (y > y_goal)
+      extendLeg(index, footmode, x-1, y-1, override);
+    else if (y < y_goal)
+      extendLeg(index, footmode, x-1, y+1, override);
+    else
+      extendLeg(index, footmode, x-1, y, override);
+  }
+  else if (x < x_goal){
+    if (y > y_goal)
+      extendLeg(index, footmode, x+1, y-1, override);
+    else if (y < y_goal)
+      extendLeg(index, footmode, x+1, y+1, override);
+    else
+      extendLeg(index, footmode, x+1, y, override);
+  }
+  else{
+    if (y > y_goal)
+      extendLeg(index, footmode, x, y-1, override);
+    else if (y < y_goal)
+      extendLeg(index, footmode, x, y+1, override);
+  }
+  return false;
+}
+
+void writeAll(){
+  for (leg * l: legs){
+    l->joint1->servo.write(constrain(l->joint1->pos, l->joint1->flo, l->joint1->ciel));
+    l->joint2->servo.write(constrain(l->joint2->pos, l->joint2->flo, l->joint2->ciel)); 
+    l->joint3->servo.write(constrain(l->joint3->pos, l->joint3->flo, l->joint3->ciel));
+  }
+}
+
+float sind(float x){
+  return sin(x*pi/180.0);
+}
+float cosd(float x){
+  return cos(x*pi/180.0);
+}
+float tand(float x){
+  return tan(x*pi/180.0);
+}
+float acosd(float x){
+  return acos(x)*180.0/pi;
+}
+float atan2d(float y, float x){
+  return atan2(y,x)*180.0/pi;
+}
+
+// INCLINE FUNCS
+
+float y_to_y_incline(int index, float x, float y, float incline){
+  float yaw_leg_specific;
+  if (index == 0)
+    yaw_leg_specific = yaw;
+  else if (index == 1)
+    yaw_leg_specific = yaw-120;
+  else
+    yaw_leg_specific = yaw+120;
+  float x_projected = x*cosd(yaw_leg_specific);
+  float incline_offset = x_projected*tand(incline);
+  float y_adjusted = y + incline_offset;
+  //Serial.print("y adjusted: ");Serial.println(y_adjusted);
+  return y_adjusted;
+}
+
+bool transition_incline(int index, int which_func, float incline){
+  float x_goal;
+  float y_goal;
+  float footmode;
+  bool override;
+  if (which_func == 0){ // stand
+    x_goal = x_stand;
+    y_goal = y_to_y_incline(index, x_goal, y_ground, incline);
+    footmode = 1;
+    override = true;
+    //Serial.print("y_goal: ");Serial.println(y_goal);
+  }
+  else if (which_func == -1){ // inactive push
+    x_goal = inactive_push_x;
+    y_goal = y_to_y_incline(index, x_goal, inactive_push_y, incline);
+    footmode = 1;
+    override = true;
+  }
+  else if (which_func == 1){ // active push
+    x_goal = walkSPL[1];
+    y_goal = y_to_y_incline(index, x_goal, y_ground, incline);
+    footmode = 0;
+    override = false;
+  }
+  else if (which_func == 2){ // stop
+    x_goal = x_stand;
+    y_goal = y_to_y_incline(index, x_goal, y_ground-stop_offset, incline);
+    footmode = 0;
+    override = true;
+  }
+
   float x = legs[index]->x;
   float y = legs[index]->y;
   if (abs(x-x_goal) <= 2 && abs(y-y_goal) <= 2){
@@ -499,34 +695,90 @@ bool transition(int index, int which_func){
     else if (y < y_goal)
       extendLeg(index, footmode, x, y+1, override);
   }
-  
+
   return false;
 }
 
-void writeAll(){
-  for (leg * l: legs){
-    l->joint1->servo.write(constrain(l->joint1->pos, l->joint1->flo, l->joint1->ciel));
-    l->joint2->servo.write(constrain(l->joint2->pos, l->joint2->flo, l->joint2->ciel)); 
-    l->joint3->servo.write(constrain(l->joint3->pos, l->joint3->flo, l->joint3->ciel));
-    if (l->index == 0 && which_func == '1'){
-      //Serial.print("joint 1: ");Serial.println(l->joint1->pos);
-      //Serial.print("joint 2: ");Serial.println(l->joint2->pos);
-      //Serial.print("j3: ");Serial.println(l->joint3->pos);
-    }
+void stand_incline(float incline){
+  switch (c){
+    case 0:
+      done = true;
+      if (first_time){
+        for (int i = 0; i < 3; i++){
+          if (!transition_incline(i,0, incline))
+            done = false;;
+        }
+        if (done){
+          first_time = false;
+          c = 1;
+        }
+        break;
+      }
+      else{
+        c=1;
+        break;
+      }
+    case 1:
+      for (int i = 0; i < 3; i++){
+        extendLeg(i, 1, x_stand, y_to_y_incline(i, x_stand, y_ground, incline), 1);
+      }
   }
+  writeAll();
 }
 
-float sind(float x){
-  return sin(x*pi/180.0);
-}
-float cosd(float x){
-  return cos(x*pi/180.0);
-}
-float acosd(float x){
-  return acos(x)*180.0/pi;
-}
-float atan2d(float y, float x){
-  return atan2(y,x)*180.0/pi;
+void stop_incline(float incline){
+  switch (c){
+    case 0:
+      done = true;
+      if (first_time){
+        for (int i = 0; i < 3; i++){
+          if (!transition_incline(i,2, incline))
+            done = false;;
+        }
+        if (done){
+          first_time = false;
+          c = 1;
+        }
+        break;
+      }
+      else{
+        c=1;
+        break;
+      }
+    case 1:
+      for (int i = 0; i < 3; i++){
+        extendLeg(i, 0, x_stand, y_to_y_incline(i, x_stand, y_ground - stop_offset, incline), 1);
+      }
+  }
+  writeAll();
 }
 
-
+void pivot_incline(int index, float incline){
+  switch (c){
+    case 0:
+      done = true;
+      if (first_time){
+        if (!transition_incline(index,2, incline))
+          done = false;
+        if (!transition_incline((index+1)%3,0, incline))
+          done = false;
+        if (!transition_incline((index+2)%3,0, incline))
+          done = false;
+        if (done){
+          first_time = false;
+          c = 1;
+        }
+        break;
+      }
+      else{
+        c=1;
+        break;
+      }
+    case 1:
+      //Serial.print("y: ");Serial.println(y_to_y_incline(index, x_stand, y_ground, incline));
+      extendLeg(index, 0, x_stand, y_to_y_incline(index, x_stand, y_ground - stop_offset, incline), 1);
+      extendLeg((index+1)%3, 1, x_stand, y_to_y_incline((index+1)%3, x_stand, y_ground, incline), 1);
+      extendLeg((index+2)%3, 1, x_stand, y_to_y_incline((index+2)%3, x_stand, y_ground, incline), 1);
+  }
+  writeAll();
+}
