@@ -1,0 +1,1067 @@
+<robot name="onshape">
+    <link name="bigball">
+        <visual>
+            <geometry>
+                <mesh filename="package:///bigball.stl" />
+            </geometry>
+            <material name="bigball_material" />
+        </visual>
+        <collision>
+            <geometry>
+                <mesh filename="package:///bigball.stl" />
+            </geometry>
+        </collision>
+    </link>
+
+    <joint name="dummy_joint" type="fixed" >
+        <origin xyz="0 0 0" />
+        <parent link="bigball" />
+        <child link="dummy_link1" />
+    </joint>
+
+    <link name="dummy_link1" />
+
+    <joint name="ball_joint_1" type="continuous" >
+        <parent link="dummy_link1" />
+        <child link="dummy_link2" />
+        <axis xyz="0 0 1" />
+        <limit effort="1" velocity="20" />
+        <joint_properties friction="0.0" />
+    </joint>
+
+   <link name="dummy_link2" />
+
+   <joint name="ball_joint_2" type="continuous" >
+        <parent link="dummy_link2" />
+        <child link="dummy_link3" />
+        <axis xyz="0 1 0" />
+        <limit effort="1" velocity="20" />
+        <joint_properties friction="0.0" />
+    </joint>
+
+    <link name="dummy_link3" />
+
+   <joint name="ball_joint_3" type="continuous" >
+        <parent link="dummy_link3" />
+        <child link="root" />
+        <axis xyz="1 0 0" />
+        <limit effort="1" velocity="20" />
+        <joint_properties friction="0.0" />
+    </joint>
+
+    <link name="root">
+        <visual>
+            <origin xyz="-0.066136451976451654522 0.11455116625921604734 -0.030437159504669825116"
+                rpy="0.20135792079033623669 2.7933944426025118895e-15 -2.6179938779915006286" />
+            <geometry>
+                <mesh filename="package:///metal_bearing.stl" />
+            </geometry>
+            <material name="metal_bearing_material">
+                <color
+                    rgba="0.91764705882352937127 0.91764705882352937127 0.91764705882352937127 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="-0.066136451976451654522 0.11455116625921604734 -0.030437159504669825116"
+                rpy="0.20135792079033623669 2.7933944426025118895e-15 -2.6179938779915006286" />
+            <geometry>
+                <mesh filename="package:///metal_bearing.stl" />
+            </geometry>
+        </collision>
+        <visual>
+            <origin xyz="0.050855887777808167494 0.060704981495185245111 0.12555773243185486265"
+                rpy="1.570796326794896558 1.6326809185664553574e-16 1.0471975511965971872" />
+            <geometry>
+                <mesh filename="package:///servo.stl" />
+            </geometry>
+            <material name="servo_material">
+                <color
+                    rgba="0.043137254901960783715 0.21568627450980393245 0.40392156862745098866 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0.050855887777808167494 0.060704981495185245111 0.12555773243185486265"
+                rpy="1.570796326794896558 1.6326809185664553574e-16 1.0471975511965971872" />
+            <geometry>
+                <mesh filename="package:///servo.stl" />
+            </geometry>
+        </collision>
+        <visual>
+            <origin xyz="0.027040189173736919881 0.074454981495185992846 0.12555773243185486265"
+                rpy="0.52359877559829759441 1.570796326794896558 0" />
+            <geometry>
+                <mesh filename="package:///servo_mount.stl" />
+            </geometry>
+            <material name="servo_mount_material">
+                <color
+                    rgba="0.08627450980392156743 0.32156862745098041545 0.5803921568627451455 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0.027040189173736919881 0.074454981495185992846 0.12555773243185486265"
+                rpy="0.52359877559829759441 1.570796326794896558 0" />
+            <geometry>
+                <mesh filename="package:///servo_mount.stl" />
+            </geometry>
+        </collision>
+        <visual>
+            <origin
+                xyz="-0.00014825288019180982158 -4.9718498588563475593e-06 -0.013023078567689652663"
+                rpy="3.6596217351264022174e-16 -5.1926686684235565582e-17 -1.5710119377099436289" />
+            <geometry>
+                <mesh filename="package:///ringconstraint_connector.stl" />
+            </geometry>
+            <material name="ringconstraint_connector_material">
+                <color
+                    rgba="0.08627450980392156743 0.32156862745098041545 0.5803921568627451455 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin
+                xyz="-0.00014825288019180982158 -4.9718498588563475593e-06 -0.013023078567689652663"
+                rpy="3.6596217351264022174e-16 -5.1926686684235565582e-17 -1.5710119377099436289" />
+            <geometry>
+                <mesh filename="package:///ringconstraint_connector.stl" />
+            </geometry>
+        </collision>
+        <visual>
+            <origin
+                xyz="7.3897639499068135116e-05 -0.00012852326250556433962 -0.013023078488385103624"
+                rpy="1.5641664464943395902e-18 1.1527149136035568744e-17 0.52338316468324985742" />
+            <geometry>
+                <mesh filename="package:///ringconstraint_connector.stl" />
+            </geometry>
+            <material name="ringconstraint_connector_material">
+                <color
+                    rgba="0.08627450980392156743 0.32156862745098041545 0.5803921568627451455 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin
+                xyz="7.3897639499068135116e-05 -0.00012852326250556433962 -0.013023078488385103624"
+                rpy="1.5641664464943395902e-18 1.1527149136035568744e-17 0.52338316468324985742" />
+            <geometry>
+                <mesh filename="package:///ringconstraint_connector.stl" />
+            </geometry>
+        </collision>
+        <visual>
+            <origin xyz="0.13227244635170770648 -4.9718498587071613404e-06 -0.030437159583974138233"
+                rpy="0.20135792079033573709 1.6112138123030290333e-15 1.5707963267948961139" />
+            <geometry>
+                <mesh filename="package:///metal_bearing.stl" />
+            </geometry>
+            <material name="metal_bearing_material">
+                <color
+                    rgba="0.91764705882352937127 0.91764705882352937127 0.91764705882352937127 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0.13227244635170770648 -4.9718498587071613404e-06 -0.030437159583974138233"
+                rpy="0.20135792079033573709 1.6112138123030290333e-15 1.5707963267948961139" />
+            <geometry>
+                <mesh filename="package:///metal_bearing.stl" />
+            </geometry>
+        </collision>
+        <visual>
+            <origin
+                xyz="7.3897639498110567757e-05 -0.00012852326250757661885 -0.013023078488385020357"
+                rpy="9.9828253507083306275e-18 -5.7635869034646313138e-18 2.6179938779914939673" />
+            <geometry>
+                <mesh filename="package:///ringconstraint.stl" />
+            </geometry>
+            <material name="ringconstraint_material">
+                <color
+                    rgba="0.08627450980392156743 0.32156862745098041545 0.5803921568627451455 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin
+                xyz="7.3897639498110567757e-05 -0.00012852326250757661885 -0.013023078488385020357"
+                rpy="9.9828253507083306275e-18 -5.7635869034646313138e-18 2.6179938779914939673" />
+            <geometry>
+                <mesh filename="package:///ringconstraint.stl" />
+            </geometry>
+        </collision>
+        <visual>
+            <origin xyz="-0.066135994025390637541 -0.11455143065738632169 -0.030437159504668742649"
+                rpy="2.9402347327994635684 -1.479897102869622134e-15 2.6179938779914939673" />
+            <geometry>
+                <mesh filename="package:///metal_bearing.stl" />
+            </geometry>
+            <material name="metal_bearing_material">
+                <color
+                    rgba="0.91764705882352937127 0.91764705882352937127 0.91764705882352937127 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="-0.066135994025390637541 -0.11455143065738632169 -0.030437159504668742649"
+                rpy="2.9402347327994635684 -1.479897102869622134e-15 2.6179938779914939673" />
+            <geometry>
+                <mesh filename="package:///metal_bearing.stl" />
+            </geometry>
+        </collision>
+        <visual>
+            <origin
+                xyz="1.3535550127952156174e-07 -2.9435373279443344252e-07 0.11047466466410682528"
+                rpy="-3.141592653589793116 -6.1942894314924533574e-30 -3.8857805861880454263e-16" />
+            <geometry>
+                <mesh filename="package:///servohub_base_bottom.stl" />
+            </geometry>
+            <material name="servohub_base_bottom_material">
+                <color
+                    rgba="0.08627450980392156743 0.32156862745098041545 0.5803921568627451455 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin
+                xyz="1.3535550127952156174e-07 -2.9435373279443344252e-07 0.11047466466410682528"
+                rpy="-3.141592653589793116 -6.1942894314924533574e-30 -3.8857805861880454263e-16" />
+            <geometry>
+                <mesh filename="package:///servohub_base_bottom.stl" />
+            </geometry>
+        </collision>
+        <visual>
+            <origin
+                xyz="-0.0001482528801918930883 -4.9718498587141002343e-06 -0.013023078567689569396"
+                rpy="-2.2722991058808985181e-16 -2.8956323273486570881e-16 0.52359877559829881566" />
+            <geometry>
+                <mesh filename="package:///ringconstraint.stl" />
+            </geometry>
+            <material name="ringconstraint_material">
+                <color
+                    rgba="0.08627450980392156743 0.32156862745098041545 0.5803921568627451455 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin
+                xyz="-0.0001482528801918930883 -4.9718498587141002343e-06 -0.013023078567689569396"
+                rpy="-2.2722991058808985181e-16 -2.8956323273486570881e-16 0.52359877559829881566" />
+            <geometry>
+                <mesh filename="package:///ringconstraint.stl" />
+            </geometry>
+        </collision>
+        <visual>
+            <origin xyz="-0.077999999999999569678 0.013689999999999643426 0.12555773243185480714"
+                rpy="1.570796326794896558 1.6326809185663966858e-16 3.1415926535897908956" />
+            <geometry>
+                <mesh filename="package:///servo.stl" />
+            </geometry>
+            <material name="servo_material">
+                <color
+                    rgba="0.043137254901960783715 0.21568627450980393245 0.40392156862745098866 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="-0.077999999999999569678 0.013689999999999643426 0.12555773243185480714"
+                rpy="1.570796326794896558 1.6326809185663966858e-16 3.1415926535897908956" />
+            <geometry>
+                <mesh filename="package:///servo.stl" />
+            </geometry>
+        </collision>
+        <visual>
+            <origin
+                xyz="7.4355590559183060151e-05 0.00012825886433723288071 -0.013023078488384173812"
+                rpy="-2.2722989909161785679e-16 -2.8956323730555335449e-16 -1.5707963267948970021" />
+            <geometry>
+                <mesh filename="package:///ringconstraint.stl" />
+            </geometry>
+            <material name="ringconstraint_material">
+                <color
+                    rgba="0.08627450980392156743 0.32156862745098041545 0.5803921568627451455 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin
+                xyz="7.4355590559183060151e-05 0.00012825886433723288071 -0.013023078488384173812"
+                rpy="-2.2722989909161785679e-16 -2.8956323730555335449e-16 -1.5707963267948970021" />
+            <geometry>
+                <mesh filename="package:///ringconstraint.stl" />
+            </geometry>
+        </collision>
+        <visual>
+            <origin
+                xyz="-5.5511151231257827021e-17 -2.5673907444456744997e-16 0.23223773243185480419"
+                rpy="3.141592653589793116 6.1629758220391547298e-33 -1.8231490071858813595e-62" />
+            <geometry>
+                <mesh filename="package:///lid.stl" />
+            </geometry>
+            <material name="lid_material">
+                <color
+                    rgba="0.08627450980392156743 0.32156862745098041545 0.5803921568627451455 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin
+                xyz="-5.5511151231257827021e-17 -2.5673907444456744997e-16 0.23223773243185480419"
+                rpy="3.141592653589793116 6.1629758220391547298e-33 -1.8231490071858813595e-62" />
+            <geometry>
+                <mesh filename="package:///lid.stl" />
+            </geometry>
+        </collision>
+        <visual>
+            <origin xyz="0.050959810826263163275 -0.060644981495186503495 0.12555773243185480714"
+                rpy="2.6179938779914944114 1.570796326794896558 0" />
+            <geometry>
+                <mesh filename="package:///servo_mount.stl" />
+            </geometry>
+            <material name="servo_mount_material">
+                <color
+                    rgba="0.08627450980392156743 0.32156862745098041545 0.5803921568627451455 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0.050959810826263163275 -0.060644981495186503495 0.12555773243185480714"
+                rpy="2.6179938779914944114 1.570796326794896558 0" />
+            <geometry>
+                <mesh filename="package:///servo_mount.stl" />
+            </geometry>
+        </collision>
+        <visual>
+            <origin
+                xyz="2.4141474236349935723e-10 -4.971849858665527977e-06 -0.0034371595839744334411"
+                rpy="5.2005258701522540493e-17 3.6438407084438416358e-16 -3.141592653589793116" />
+            <geometry>
+                <mesh filename="package:///triconstraint.stl" />
+            </geometry>
+            <material name="triconstraint_material">
+                <color
+                    rgba="0.08627450980392156743 0.32156862745098041545 0.5803921568627451455 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin
+                xyz="2.4141474236349935723e-10 -4.971849858665527977e-06 -0.0034371595839744334411"
+                rpy="5.2005258701522540493e-17 3.6438407084438416358e-16 -3.141592653589793116" />
+            <geometry>
+                <mesh filename="package:///triconstraint.stl" />
+            </geometry>
+        </collision>
+        <visual>
+            <origin
+                xyz="-2.2892130585594472336e-07 -1.3229300473149852024e-07 -0.00343715950466989828"
+                rpy="-1.1527173806989212975e-17 -5.5220263365470812366e-30 -1.0471975511965978534" />
+            <geometry>
+                <mesh filename="package:///triconstraint.stl" />
+            </geometry>
+            <material name="triconstraint_material">
+                <color
+                    rgba="0.08627450980392156743 0.32156862745098041545 0.5803921568627451455 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin
+                xyz="-2.2892130585594472336e-07 -1.3229300473149852024e-07 -0.00343715950466989828"
+                rpy="-1.1527173806989212975e-17 -5.5220263365470812366e-30 -1.0471975511965978534" />
+            <geometry>
+                <mesh filename="package:///triconstraint.stl" />
+            </geometry>
+        </collision>
+        <visual>
+            <origin xyz="0.027144112222190833195 -0.074394981495185530385 0.12555773243185480714"
+                rpy="1.570796326794896558 1.632680918566353052e-16 -1.0471975511966000738" />
+            <geometry>
+                <mesh filename="package:///servo.stl" />
+            </geometry>
+            <material name="servo_material">
+                <color
+                    rgba="0.043137254901960783715 0.21568627450980393245 0.40392156862745098866 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0.027144112222190833195 -0.074394981495185530385 0.12555773243185480714"
+                rpy="1.570796326794896558 1.632680918566353052e-16 -1.0471975511966000738" />
+            <geometry>
+                <mesh filename="package:///servo.stl" />
+            </geometry>
+        </collision>
+        <visual>
+            <origin xyz="0 -2.3939183968479937903e-16 -0.0034096867717577777901"
+                rpy="5.9164567891574624237e-30 -6.162975822039023358e-33 3.141592653589793116" />
+            <geometry>
+                <mesh filename="package:///triconstraint_hub.stl" />
+            </geometry>
+            <material name="triconstraint_hub_material">
+                <color
+                    rgba="0.08627450980392156743 0.32156862745098041545 0.5803921568627451455 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 -2.3939183968479937903e-16 -0.0034096867717577777901"
+                rpy="5.9164567891574624237e-30 -6.162975822039023358e-33 3.141592653589793116" />
+            <geometry>
+                <mesh filename="package:///triconstraint_hub.stl" />
+            </geometry>
+        </collision>
+        <visual>
+            <origin
+                xyz="-2.7755575615628913511e-17 -2.6020852139652106416e-16 0.15223773243185478865"
+                rpy="3.141592653589793116 -5.9164567891574624237e-30 -1.570796326794896558" />
+            <geometry>
+                <mesh filename="package:///electronics_platform.stl" />
+            </geometry>
+            <material name="electronics_platform_material">
+                <color
+                    rgba="0.08627450980392156743 0.32156862745098041545 0.5803921568627451455 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin
+                xyz="-2.7755575615628913511e-17 -2.6020852139652106416e-16 0.15223773243185478865"
+                rpy="3.141592653589793116 -5.9164567891574624237e-30 -1.570796326794896558" />
+            <geometry>
+                <mesh filename="package:///electronics_platform.stl" />
+            </geometry>
+        </collision>
+        <visual>
+            <origin
+                xyz="2.2902975591043706061e-07 -1.3210516444997488783e-07 -0.0034371595046690378572"
+                rpy="5.2005246459986895719e-17 3.6438406905448016749e-16 1.0471975511965976313" />
+            <geometry>
+                <mesh filename="package:///triconstraint.stl" />
+            </geometry>
+            <material name="triconstraint_material">
+                <color
+                    rgba="0.08627450980392156743 0.32156862745098041545 0.5803921568627451455 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin
+                xyz="2.2902975591043706061e-07 -1.3210516444997488783e-07 -0.0034371595046690378572"
+                rpy="5.2005246459986895719e-17 3.6438406905448016749e-16 1.0471975511965976313" />
+            <geometry>
+                <mesh filename="package:///triconstraint.stl" />
+            </geometry>
+        </collision>
+        <visual>
+            <origin xyz="0 0 0.1344250000000000167"
+                rpy="-1.5707963267948947816 -5.5614166650613502179e-17 -3.141592653589793116" />
+            <geometry>
+                <mesh filename="package:///metal_bearing.stl" />
+            </geometry>
+            <material name="metal_bearing_material">
+                <color
+                    rgba="0.91764705882352937127 0.91764705882352937127 0.91764705882352937127 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0.1344250000000000167"
+                rpy="-1.5707963267948947816 -5.5614166650613502179e-17 -3.141592653589793116" />
+            <geometry>
+                <mesh filename="package:///metal_bearing.stl" />
+            </geometry>
+        </collision>
+        <visual>
+            <origin
+                xyz="7.3897639497472189518e-05 -0.00012852326250761131332 -0.013023078488385006479"
+                rpy="8.4357609051166346083e-18 -5.7657173521276296529e-18 2.6182094889065430365" />
+            <geometry>
+                <mesh filename="package:///ringconstraint_connector.stl" />
+            </geometry>
+            <material name="ringconstraint_connector_material">
+                <color
+                    rgba="0.08627450980392156743 0.32156862745098041545 0.5803921568627451455 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin
+                xyz="7.3897639497472189518e-05 -0.00012852326250761131332 -0.013023078488385006479"
+                rpy="8.4357609051166346083e-18 -5.7657173521276296529e-18 2.6182094889065430365" />
+            <geometry>
+                <mesh filename="package:///ringconstraint_connector.stl" />
+            </geometry>
+        </collision>
+        <visual>
+            <origin xyz="-0.078000000000000360711 -0.013810000000000280385 0.12555773243185480714"
+                rpy="-1.570796326794896558 1.570796326794896558 0" />
+            <geometry>
+                <mesh filename="package:///servo_mount.stl" />
+            </geometry>
+            <material name="servo_mount_material">
+                <color
+                    rgba="0.08627450980392156743 0.32156862745098041545 0.5803921568627451455 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="-0.078000000000000360711 -0.013810000000000280385 0.12555773243185480714"
+                rpy="-1.570796326794896558 1.570796326794896558 0" />
+            <geometry>
+                <mesh filename="package:///servo_mount.stl" />
+            </geometry>
+        </collision>
+        <inertial>
+            <origin
+                xyz="1.7474266470395329178e-05 -1.5131202109850505776e-05 0.071635793202043260286"
+                rpy="0 0 0" />
+            <mass value="2.7672149289489791357" />
+            <inertia ixx="0.030141116437496461716" ixy="3.049093178960109922e-07"
+                ixz="-4.3230475667089597082e-06" iyy="0.030143633349555117029"
+                iyz="3.1278358053615959412e-06" izz="0.025002325170998845882" />
+        </inertial>
+    </link>
+
+    <link name="leg1.1">
+        <visual>
+            <origin xyz="0.00011999999999934285455 0.11700000000000036759 -0.029630000000000062538"
+                rpy="-3.1415926535897891192 5.1952811790837606087e-16 1.5707963267949036634" />
+            <geometry>
+                <mesh filename="package:///servo.stl" />
+            </geometry>
+            <material name="servo_material">
+                <color
+                    rgba="0.043137254901960783715 0.21568627450980393245 0.40392156862745098866 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0.00011999999999934285455 0.11700000000000036759 -0.029630000000000062538"
+                rpy="-3.1415926535897891192 5.1952811790837606087e-16 1.5707963267949036634" />
+            <geometry>
+                <mesh filename="package:///servo.stl" />
+            </geometry>
+        </collision>
+        <visual>
+            <origin xyz="0.0001199999999993983657 0.11700000000000022882 -0.0021300000000000138267"
+                rpy="-3.141592653589793116 -2.2264902190136807768e-16 -3.141592653589783346" />
+            <geometry>
+                <mesh filename="package:///servo_mount_slotted.stl" />
+            </geometry>
+            <material name="servo_mount_slotted_material">
+                <color
+                    rgba="0.08627450980392156743 0.32156862745098041545 0.5803921568627451455 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0.0001199999999993983657 0.11700000000000022882 -0.0021300000000000138267"
+                rpy="-3.141592653589793116 -2.2264902190136807768e-16 -3.141592653589783346" />
+            <geometry>
+                <mesh filename="package:///servo_mount_slotted.stl" />
+            </geometry>
+        </collision>
+        <visual>
+            <origin xyz="0 1.3877787807814456755e-17 0"
+                rpy="3.141592653589793116 5.8968490437686603553e-23 1.2104862544165721735e-22" />
+            <geometry>
+                <mesh filename="package:///metal_servo_horn.stl" />
+            </geometry>
+            <material name="metal_servo_horn_material">
+                <color
+                    rgba="0.49019607843137252834 0.08627450980392156743 0.55686274509803923571 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 1.3877787807814456755e-17 0"
+                rpy="3.141592653589793116 5.8968490437686603553e-23 1.2104862544165721735e-22" />
+            <geometry>
+                <mesh filename="package:///metal_servo_horn.stl" />
+            </geometry>
+        </collision>
+        <visual>
+            <origin
+                xyz="-0.0059999999999997555289 -0.0059999999999999498179 -0.033750000000000036915"
+                rpy="-1.57079632679489678 -1.8646121052082998621e-16 -1.5707963267948896746" />
+            <geometry>
+                <mesh filename="package:///link1.stl" />
+            </geometry>
+            <material name="link1_material">
+                <color rgba="1 0.7568627450980391913 0.054901960784313724728 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin
+                xyz="-0.0059999999999997555289 -0.0059999999999999498179 -0.033750000000000036915"
+                rpy="-1.57079632679489678 -1.8646121052082998621e-16 -1.5707963267948896746" />
+            <geometry>
+                <mesh filename="package:///link1.stl" />
+            </geometry>
+        </collision>
+        <inertial>
+            <origin xyz="9.8810623165713080398e-05 0.10145666634540242979 -0.02645931400206152917"
+                rpy="0 0 0" />
+            <mass value="0.42065304222078903074" />
+            <inertia ixx="0.00079739917426713117533" ixy="-6.0445168721510917316e-07"
+                ixz="-4.4500553528351302017e-08" iyy="0.00021334761429353342856"
+                iyz="-2.2289846091414621817e-05" izz="0.00066456514899867710246" />
+        </inertial>
+    </link>
+
+    <link name="leg1.2">
+        <visual>
+            <origin xyz="1.9428902930940239457e-16 0.21362501523342139476 -0.033750000000000335287"
+                rpy="1.570796326794896336 1.5707963267948954478 0" />
+            <geometry>
+                <mesh filename="package:///link2p3.stl" />
+            </geometry>
+            <material name="link2p3_material">
+                <color rgba="1 0.7568627450980391913 0.054901960784313724728 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="1.9428902930940239457e-16 0.21362501523342139476 -0.033750000000000335287"
+                rpy="1.570796326794896336 1.5707963267948954478 0" />
+            <geometry>
+                <mesh filename="package:///link2p3.stl" />
+            </geometry>
+        </collision>
+        <visual>
+            <origin
+                xyz="-0.0060000000000000469624 -0.0059999999999976461051 -0.033750000000000529576"
+                rpy="-1.5707963267949009989 1.2153926095084956155e-15 -1.5707963267948974462" />
+            <geometry>
+                <mesh filename="package:///link2p1.stl" />
+            </geometry>
+            <material name="link2p1_material">
+                <color rgba="1 0.7568627450980391913 0.054901960784313724728 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin
+                xyz="-0.0060000000000000469624 -0.0059999999999976461051 -0.033750000000000529576"
+                rpy="-1.5707963267949009989 1.2153926095084956155e-15 -1.5707963267948974462" />
+            <geometry>
+                <mesh filename="package:///link2p1.stl" />
+            </geometry>
+        </collision>
+        <visual>
+            <origin xyz="0 0 1.0408340855860842566e-17"
+                rpy="-3.141592653589793116 -1.6084686514810857157e-23 8.9222606517838412606e-22" />
+            <geometry>
+                <mesh filename="package:///metal_servo_horn.stl" />
+            </geometry>
+            <material name="metal_servo_horn_material">
+                <color
+                    rgba="0.49019607843137252834 0.08627450980392156743 0.55686274509803923571 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 1.0408340855860842566e-17"
+                rpy="-3.141592653589793116 -1.6084686514810857157e-23 8.9222606517838412606e-22" />
+            <geometry>
+                <mesh filename="package:///metal_servo_horn.stl" />
+            </geometry>
+        </collision>
+        <visual>
+            <origin
+                xyz="-0.006000000000000074718 -0.0059999999999977016163 -0.033750000000000515699"
+                rpy="-1.5707963267949005548 1.1043703070459827225e-15 -1.5707963267948976682" />
+            <geometry>
+                <mesh filename="package:///link2p2.stl" />
+            </geometry>
+            <material name="link2p2_material">
+                <color rgba="1 0.7568627450980391913 0.054901960784313724728 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin
+                xyz="-0.006000000000000074718 -0.0059999999999977016163 -0.033750000000000515699"
+                rpy="-1.5707963267949005548 1.1043703070459827225e-15 -1.5707963267948976682" />
+            <geometry>
+                <mesh filename="package:///link2p2.stl" />
+            </geometry>
+        </collision>
+        <inertial>
+            <origin xyz="-0.0023045619501030163365 0.087058632057659207648 -0.032786318995412171151"
+                rpy="0 0 0" />
+            <mass value="0.18965014747502997872" />
+            <inertia ixx="0.0010212538478869027936" ixy="2.1876857136585566656e-06"
+                ixz="-4.2118691491243887652e-07" iyy="0.00024066004626896540103"
+                iyz="1.4135387299150935336e-05" izz="0.00081340914872085048545" />
+        </inertial>
+    </link>
+
+    <joint name="leg1.2" type="revolute">
+        <origin xyz="0.00011999999999912080995 0.13600000000000039835 -0.060630000000000086602"
+            rpy="3.1415926535897873428 -5.2637867232088409113e-15 -3.141590970523282067" />
+        <parent link="leg1.1" />
+        <child link="leg1.2" />
+        <axis xyz="0 0 1" />
+        <limit effort="1" velocity="20" />
+        <joint_properties friction="0.0" />
+    </joint>
+
+    <joint name="leg1.1" type="revolute">
+        <origin xyz="0.0097973247048725314867 -0.10634946416709087358 0.12555773243185480714"
+            rpy="1.570796326794896558 1.5707941032838139694 -1.0471975511662336977" />
+        <parent link="root" />
+        <child link="leg1.1" />
+        <axis xyz="0 0 1" />
+        <limit effort="1" velocity="20" />
+        <joint_properties friction="0.0" />
+    </joint>
+
+    <link name="leg2.1">
+        <visual>
+            <origin
+                xyz="-0.0059999999999997277733 -0.005999999999998700817 -0.033749999999998767097"
+                rpy="-1.5707963267948905628 -5.6061935908120958505e-15 -1.5707963267948958919" />
+            <geometry>
+                <mesh filename="package:///link1.stl" />
+            </geometry>
+            <material name="link1_material">
+                <color rgba="1 0.7568627450980391913 0.054901960784313724728 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin
+                xyz="-0.0059999999999997277733 -0.005999999999998700817 -0.033749999999998767097"
+                rpy="-1.5707963267948905628 -5.6061935908120958505e-15 -1.5707963267948958919" />
+            <geometry>
+                <mesh filename="package:///link1.stl" />
+            </geometry>
+        </collision>
+        <visual>
+            <origin xyz="0.00012000000000014776624 0.11699999999999714795 -0.029629999999999379057"
+                rpy="3.1415926535897864547 1.0602197201625262417e-14 1.5707963267948974462" />
+            <geometry>
+                <mesh filename="package:///servo.stl" />
+            </geometry>
+            <material name="servo_material">
+                <color
+                    rgba="0.043137254901960783715 0.21568627450980393245 0.40392156862745098866 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0.00012000000000014776624 0.11699999999999714795 -0.029629999999999379057"
+                rpy="3.1415926535897864547 1.0602197201625262417e-14 1.5707963267948974462" />
+            <geometry>
+                <mesh filename="package:///servo.stl" />
+            </geometry>
+        </collision>
+        <visual>
+            <origin xyz="0.00012000000000000898837 0.11699999999999731448 -0.0021300000000003607714"
+                rpy="-3.1415926535897877869 6.1111017931023516222e-15 -3.1415926535897904515" />
+            <geometry>
+                <mesh filename="package:///servo_mount_slotted.stl" />
+            </geometry>
+            <material name="servo_mount_slotted_material">
+                <color
+                    rgba="0.08627450980392156743 0.32156862745098041545 0.5803921568627451455 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0.00012000000000000898837 0.11699999999999731448 -0.0021300000000003607714"
+                rpy="-3.1415926535897877869 6.1111017931023516222e-15 -3.1415926535897904515" />
+            <geometry>
+                <mesh filename="package:///servo_mount_slotted.stl" />
+            </geometry>
+        </collision>
+        <visual>
+            <origin xyz="0 0 0"
+                rpy="-3.141592653589793116 -5.953611130477639013e-23 -1.840962725248806647e-21" />
+            <geometry>
+                <mesh filename="package:///metal_servo_horn.stl" />
+            </geometry>
+            <material name="metal_servo_horn_material">
+                <color
+                    rgba="0.49019607843137252834 0.08627450980392156743 0.55686274509803923571 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0"
+                rpy="-3.141592653589793116 -5.953611130477639013e-23 -1.840962725248806647e-21" />
+            <geometry>
+                <mesh filename="package:///metal_servo_horn.stl" />
+            </geometry>
+        </collision>
+        <inertial>
+            <origin xyz="9.8810623166361365535e-05 0.10145666634539984852 -0.026459314002060932425"
+                rpy="0 0 0" />
+            <mass value="0.42065304222078903074" />
+            <inertia ixx="0.00079739917426708075993" ixy="-6.0445168721842636594e-07"
+                ixz="-4.4500553526821275964e-08" iyy="0.00021334761429351949656"
+                iyz="-2.228984609141223996e-05" izz="0.00066456514899863275859" />
+        </inertial>
+    </link>
+
+    <link name="leg2.2">
+        <visual>
+            <origin xyz="0.0060000000000002412515 0.0059999999999991449062 -0.033750000000000376921"
+                rpy="-1.5707963267948952257 -4.3857177031728745077e-15 1.5707963267948934494" />
+            <geometry>
+                <mesh filename="package:///link2p1.stl" />
+            </geometry>
+            <material name="link2p1_material">
+                <color rgba="1 0.7568627450980391913 0.054901960784313724728 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0.0060000000000002412515 0.0059999999999991449062 -0.033750000000000376921"
+                rpy="-1.5707963267948952257 -4.3857177031728745077e-15 1.5707963267948934494" />
+            <geometry>
+                <mesh filename="package:///link2p1.stl" />
+            </geometry>
+        </collision>
+        <visual>
+            <origin
+                xyz="-2.7755575615628913511e-17 -5.5511151231257827021e-17 -0.004000000000000001818"
+                rpy="3.3675590327863615167e-19 -9.0253190297174292026e-21 6.0757706703558768793e-21" />
+            <geometry>
+                <mesh filename="package:///metal_servo_horn.stl" />
+            </geometry>
+            <material name="metal_servo_horn_material">
+                <color
+                    rgba="0.49019607843137252834 0.08627450980392156743 0.55686274509803923571 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin
+                xyz="-2.7755575615628913511e-17 -5.5511151231257827021e-17 -0.004000000000000001818"
+                rpy="3.3675590327863615167e-19 -9.0253190297174292026e-21 6.0757706703558768793e-21" />
+            <geometry>
+                <mesh filename="package:///metal_servo_horn.stl" />
+            </geometry>
+        </collision>
+        <visual>
+            <origin
+                xyz="-4.9960036108132044319e-16 -0.21362501523342058984 -0.033750000000001306732"
+                rpy="-1.5707963267949012209 1.5707963267948932273 0" />
+            <geometry>
+                <mesh filename="package:///link2p3.stl" />
+            </geometry>
+            <material name="link2p3_material">
+                <color rgba="1 0.7568627450980391913 0.054901960784313724728 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin
+                xyz="-4.9960036108132044319e-16 -0.21362501523342058984 -0.033750000000001306732"
+                rpy="-1.5707963267949012209 1.5707963267948932273 0" />
+            <geometry>
+                <mesh filename="package:///link2p3.stl" />
+            </geometry>
+        </collision>
+        <visual>
+            <origin xyz="0.0060000000000002134959 0.005999999999999228173 -0.033750000000000293654"
+                rpy="-1.5707963267948952257 -4.4967400056353909507e-15 1.5707963267948934494" />
+            <geometry>
+                <mesh filename="package:///link2p2.stl" />
+            </geometry>
+            <material name="link2p2_material">
+                <color rgba="1 0.7568627450980391913 0.054901960784313724728 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0.0060000000000002134959 0.005999999999999228173 -0.033750000000000293654"
+                rpy="-1.5707963267948952257 -4.4967400056353909507e-15 1.5707963267948934494" />
+            <geometry>
+                <mesh filename="package:///link2p2.stl" />
+            </geometry>
+        </collision>
+        <inertial>
+            <origin xyz="0.0023045619501029799073 -0.087058632057658041914 -0.032786318995412511157"
+                rpy="0 0 0" />
+            <mass value="0.18965014747502997872" />
+            <inertia ixx="0.0010212538478869084314" ixy="2.187685713654442203e-06"
+                ixz="4.2118691490915921789e-07" iyy="0.00024066004626896729838"
+                iyz="-1.413538729916449464e-05" izz="0.00081340914872085189492" />
+        </inertial>
+    </link>
+
+    <joint name="leg2.2" type="revolute">
+        <origin xyz="0.00012000000000023103297 0.13599999999999651257 -0.060629999999998733518"
+            rpy="3.1415926535897784611 -7.3748441172331553671e-15 -0.00012218566986276581171" />
+        <parent link="leg2.1" />
+        <child link="leg2.2" />
+        <axis xyz="0 0 1" />
+        <limit effort="1" velocity="20" />
+        <joint_properties friction="0.0" />
+    </joint>
+
+    <joint name="leg2.1" type="revolute">
+        <origin xyz="0.087202675295126999555 0.061659464167089533815 0.12555773243185486265"
+            rpy="1.570796326794896558 1.5707882745770385124 1.047197552167291823" />
+        <parent link="root" />
+        <child link="leg2.1" />
+        <axis xyz="0 0 1" />
+        <limit effort="1" velocity="20" />
+        <joint_properties friction="0.0" />
+    </joint>
+
+    <link name="leg3.1">
+        <visual>
+            <origin xyz="0.00012000000000017552182 0.11699999999999845246 -0.029629999999999625387"
+                rpy="-3.1415926535897917837 2.9454637480434987935e-15 1.5707963267948954478" />
+            <geometry>
+                <mesh filename="package:///servo.stl" />
+            </geometry>
+            <material name="servo_material">
+                <color
+                    rgba="0.043137254901960783715 0.21568627450980393245 0.40392156862745098866 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0.00012000000000017552182 0.11699999999999845246 -0.029629999999999625387"
+                rpy="-3.1415926535897917837 2.9454637480434987935e-15 1.5707963267948954478" />
+            <geometry>
+                <mesh filename="package:///servo.stl" />
+            </geometry>
+        </collision>
+        <visual>
+            <origin
+                xyz="-0.0060000000000000608402 -0.0060000000000000330846 -0.033749999999999953648"
+                rpy="-1.5707963267948981123 -2.9605567233752367655e-15 -1.5707963267948983344" />
+            <geometry>
+                <mesh filename="package:///link1.stl" />
+            </geometry>
+            <material name="link1_material">
+                <color rgba="1 0.7568627450980391913 0.054901960784313724728 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin
+                xyz="-0.0060000000000000608402 -0.0060000000000000330846 -0.033749999999999953648"
+                rpy="-1.5707963267948981123 -2.9605567233752367655e-15 -1.5707963267948983344" />
+            <geometry>
+                <mesh filename="package:///link1.stl" />
+            </geometry>
+        </collision>
+        <visual>
+            <origin xyz="0.00012000000000012001067 0.11699999999999850797 -0.0021300000000005619993"
+                rpy="-3.1415926535897904515 -1.4087361343051653943e-15 -3.141592653589793116" />
+            <geometry>
+                <mesh filename="package:///servo_mount_slotted.stl" />
+            </geometry>
+            <material name="servo_mount_slotted_material">
+                <color
+                    rgba="0.08627450980392156743 0.32156862745098041545 0.5803921568627451455 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0.00012000000000012001067 0.11699999999999850797 -0.0021300000000005619993"
+                rpy="-3.1415926535897904515 -1.4087361343051653943e-15 -3.141592653589793116" />
+            <geometry>
+                <mesh filename="package:///servo_mount_slotted.stl" />
+            </geometry>
+        </collision>
+        <visual>
+            <origin xyz="0 0 0"
+                rpy="3.141592653589793116 8.4968254624055499837e-32 1.6460109117091929353e-18" />
+            <geometry>
+                <mesh filename="package:///metal_servo_horn.stl" />
+            </geometry>
+            <material name="metal_servo_horn_material">
+                <color
+                    rgba="0.49019607843137252834 0.08627450980392156743 0.55686274509803923571 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0"
+                rpy="3.141592653589793116 8.4968254624055499837e-32 1.6460109117091929353e-18" />
+            <geometry>
+                <mesh filename="package:///metal_servo_horn.stl" />
+            </geometry>
+        </collision>
+        <inertial>
+            <origin xyz="9.8810623166390855834e-05 0.10145666634540093098 -0.026459314002061300186"
+                rpy="0 0 0" />
+            <mass value="0.42065304222078903074" />
+            <inertia ixx="0.00079739917426711035865" ixy="-6.0445168721900870109e-07"
+                ixz="-4.4500553528658788212e-08" iyy="0.00021334761429352640835"
+                iyz="-2.2289846091416231179e-05" izz="0.00066456514899864403429" />
+        </inertial>
+    </link>
+
+    <link name="leg3.2">
+        <visual>
+            <origin
+                xyz="-0.0059999999999999775735 -0.0060000000000003939071 -0.033750000000008051337"
+                rpy="-1.5707963267948858999 5.5067837011654931191e-14 -1.5707963267948961139" />
+            <geometry>
+                <mesh filename="package:///link2p2.stl" />
+            </geometry>
+            <material name="link2p2_material">
+                <color rgba="1 0.7568627450980391913 0.054901960784313724728 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin
+                xyz="-0.0059999999999999775735 -0.0060000000000003939071 -0.033750000000008051337"
+                rpy="-1.5707963267948858999 5.5067837011654931191e-14 -1.5707963267948961139" />
+            <geometry>
+                <mesh filename="package:///link2p2.stl" />
+            </geometry>
+        </collision>
+        <visual>
+            <origin xyz="0 0 0"
+                rpy="-3.141592653589793116 -7.792735847714841586e-31 -7.8519951194904518782e-24" />
+            <geometry>
+                <mesh filename="package:///metal_servo_horn.stl" />
+            </geometry>
+            <material name="metal_servo_horn_material">
+                <color
+                    rgba="0.49019607843137252834 0.08627450980392156743 0.55686274509803923571 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0"
+                rpy="-3.141592653589793116 -7.792735847714841586e-31 -7.8519951194904518782e-24" />
+            <geometry>
+                <mesh filename="package:///metal_servo_horn.stl" />
+            </geometry>
+        </collision>
+        <visual>
+            <origin
+                xyz="-0.0059999999999999775735 -0.0059999999999976738607 -0.033750000000000501821"
+                rpy="-1.570796326794901665 9.1421181300333441453e-17 -1.5707963267948961139" />
+            <geometry>
+                <mesh filename="package:///link2p1.stl" />
+            </geometry>
+            <material name="link2p1_material">
+                <color rgba="1 0.7568627450980391913 0.054901960784313724728 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin
+                xyz="-0.0059999999999999775735 -0.0059999999999976738607 -0.033750000000000501821"
+                rpy="-1.570796326794901665 9.1421181300333441453e-17 -1.5707963267948961139" />
+            <geometry>
+                <mesh filename="package:///link2p1.stl" />
+            </geometry>
+        </collision>
+        <visual>
+            <origin xyz="-5.5511151231257827021e-17 0.21362501523342325438 -0.033749999999995894395"
+                rpy="1.5707963267948832353 1.5707963267948457098 0" />
+            <geometry>
+                <mesh filename="package:///link2p3.stl" />
+            </geometry>
+            <material name="link2p3_material">
+                <color rgba="1 0.7568627450980391913 0.054901960784313724728 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="-5.5511151231257827021e-17 0.21362501523342325438 -0.033749999999995894395"
+                rpy="1.5707963267948832353 1.5707963267948457098 0" />
+            <geometry>
+                <mesh filename="package:///link2p3.stl" />
+            </geometry>
+        </collision>
+        <inertial>
+            <origin xyz="-0.0023045619501030831233 0.087058632057659471326 -0.032786318995411629917"
+                rpy="0 0 0" />
+            <mass value="0.18965014747502997872" />
+            <inertia ixx="0.0010212538478869171051" ixy="2.1876857136590864847e-06"
+                ixz="-4.2118691491146203578e-07" iyy="0.00024066004626896756943"
+                iyz="1.4135387299141921212e-05" izz="0.00081340914872086100221" />
+        </inertial>
+    </link>
+
+    <joint name="leg3.2" type="revolute">
+        <origin xyz="0.00012000000000017552182 0.13599999999999784484 -0.060629999999998608617"
+            rpy="3.1415926535897926719 -1.1953642966973408303e-14 -3.1144900367024783705" />
+        <parent link="leg3.1" />
+        <child link="leg3.2" />
+        <axis xyz="0 0 1" />
+        <limit effort="1" velocity="20" />
+        <joint_properties friction="0.0" />
+    </joint>
+
+    <joint name="leg3.1" type="revolute">
+        <origin xyz="-0.097000000000000100031 0.044690000000000770775 0.12555773243185480714"
+            rpy="-1.570796326794896558 1.5436941268057082777 1.2842120321309631033e-14" />
+        <parent link="root" />
+        <child link="leg3.1" />
+        <axis xyz="0 0 1" />
+        <limit effort="1" velocity="20" />
+        <joint_properties friction="0.0" />
+    </joint>
+
+
+</robot>
